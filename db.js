@@ -2,10 +2,12 @@ const { MongoClient } = require("mongodb");
 const { dbUri, localdbUri } = require("./config");
 
 let dbConnection;
+const client = new MongoClient(dbUri, { useNewUrlParser: true });
 
 module.exports = {
     connectToDb: cb => {
-        MongoClient.connect(dbUri)
+        client
+            .connect()
             .then(client => {
                 dbConnection = client.db();
                 return cb();
