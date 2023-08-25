@@ -1,13 +1,13 @@
+const dotenv = require("dotenv");
 const { MongoClient } = require("mongodb");
 const { dbUri, localdbUri } = require("./config");
 
 let dbConnection;
-const client = new MongoClient(dbUri, { useNewUrlParser: true });
+// const client = new MongoClient(dbUri, { useNewUrlParser: true });
 
 module.exports = {
     connectToDb: cb => {
-        client
-            .connect()
+        MongoClient.connect(dbUri, { useNewUrlParser: true })
             .then(client => {
                 dbConnection = client.db();
                 return cb();
