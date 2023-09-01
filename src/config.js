@@ -1,13 +1,6 @@
 const dotenv = require("dotenv");
 dotenv.config();
 
-// console.log({
-//     status: process.env.STATUS,
-//     port: process.env.PORT || 3001,
-//     dbUri: process.env.URI,
-//     localdbUri: process.env.LOCAL_URI,
-// });
-
 module.exports = {
     status: process.env.STATUS,
     // port:
