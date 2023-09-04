@@ -6,7 +6,7 @@ const { ObjectId } = require("mongodb");
 const { connectToDb, getDb } = require("./db");
 const connectDB = require("./dbmongoose");
 const { port, status } = require("./config");
-const { getBooks } = require("./controllers");
+const { getBooks, getBook, postBook } = require("./controllers");
 dotenv.config();
 
 connectDB();
@@ -65,34 +65,36 @@ app.get("/", (req, res) => {
 // });
 
 app.get("/books", getBooks);
+app.get("/books/:id", getBook);
+app.post("/books", postBook);
 
-app.get("/books/:id", (req, res) => {
-    if (ObjectId.isValid(req.params.id)) {
-        db.collection("books")
-            .findOne({ _id: new ObjectId(req.params.id) })
-            .then(doc => {
-                res.status(200).json(doc);
-            })
-            .catch(error => {
-                res.status(500).json({ error: "Could not fetch document" });
-            });
-    } else {
-        res.status(500).json({ error: "Not a valid id doc" });
-    }
-});
+// app.get("/books/:id", (req, res) => {
+//     if (ObjectId.isValid(req.params.id)) {
+//         db.collection("books")
+//             .findOne({ _id: new ObjectId(req.params.id) })
+//             .then(doc => {
+//                 res.status(200).json(doc);
+//             })
+//             .catch(error => {
+//                 res.status(500).json({ error: "Could not fetch document" });
+//             });
+//     } else {
+//         res.status(500).json({ error: "Not a valid id doc" });
+//     }
+// });
 
-app.post("/books", (req, res) => {
-    const book = req.body;
+// app.post("/books", (req, res) => {
+//     const book = req.body;
 
-    db.collection("books")
-        .insertOne(book)
-        .then(result => {
-            res.status(201).json(result);
-        })
-        .catch(error => {
-            res.status(500).json({ error: "Could not create a new document" });
-        });
-});
+//     db.collection("books")
+//         .insertOne(book)
+//         .then(result => {
+//             res.status(201).json(result);
+//         })
+//         .catch(error => {
+//             res.status(500).json({ error: "Could not create a new document" });
+//         });
+// });
 
 app.delete("/books/:id", (req, res) => {
     if (ObjectId.isValid(req.params.id)) {
