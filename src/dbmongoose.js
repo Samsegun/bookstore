@@ -3,7 +3,7 @@ const { localdbUri, dbUri } = require("./config");
 
 const connectDB = async () => {
     try {
-        const conn = await mongoose.connect(localdbUri);
+        const conn = await mongoose.connect(dbUri);
 
         console.log(`MongoDB connected: ${conn.connection.host}`);
     } catch (error) {
