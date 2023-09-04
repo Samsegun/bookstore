@@ -4,8 +4,12 @@ const morgan = require("morgan");
 const cors = require("cors");
 const { ObjectId } = require("mongodb");
 const { connectToDb, getDb } = require("./db");
+const connectDB = require("./dbmongoose");
 const { port, status } = require("./config");
+const { getBooks } = require("./controllers");
 dotenv.config();
+
+connectDB();
 
 const app = express();
 
@@ -14,46 +18,53 @@ app.use(
 );
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+app.listen(port, () =>
+    console.log(`Server running in ${status} mode, listening on port ::${port}`)
+);
 
 // db connection
-let db;
-connectToDb(err => {
-    if (!err) {
-        app.listen(port, () => {
-            console.log(
-                `Server running in ${status} mode, listening on port ::${port}`
-            );
-        });
+// let db;
+// connectToDb(err => {
+//     if (!err) {
+//         app.listen(port, () => {
+//             console.log(
+//                 `Server running in ${status} mode, listening on port ::${port}`
+//             );
+//         });
 
-        db = getDb();
-    }
-});
+//         db = getDb();
+//     }
+// });
 
 // routes
 app.get("/", (req, res) => {
     res.json({ message: "welcome to books api" });
 });
 
-app.get("/books", (req, res) => {
-    // current page
-    const page = req.query.page || 0;
-    const booksPerPage = 3;
+// app.get("/books", (req, res) => {
+//     // current page
+//     const page = req.query.page || 0;
+//     const booksPerPage = 3;
 
-    let books = [];
+//     let books = [];
 
-    db.collection("books")
-        .find()
-        .sort({ author: 1 })
-        .skip(page * booksPerPage)
-        .limit(booksPerPage)
-        .forEach(book => books.push(book))
-        .then(() => {
-            res.status(200).json(books);
-        })
-        .catch(error => {
-            res.status(500).json({ error: "Could not fetch documents" });
-        });
-});
+//     db.collection("books")
+//         .find()
+//         .sort({ author: 1 })
+//         .skip(page * booksPerPage)
+//         .limit(booksPerPage)
+//         .forEach(book => books.push(book))
+//         .then(() => {
+//             res.status(200).json(books);
+//         })
+//         .catch(error => {
+//             res.status(500).json({ error: "Could not fetch documents" });
+//         });
+// });
+
+app.get("/books", getBooks);
 
 app.get("/books/:id", (req, res) => {
     if (ObjectId.isValid(req.params.id)) {
