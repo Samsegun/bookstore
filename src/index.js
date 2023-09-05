@@ -2,11 +2,17 @@ const dotenv = require("dotenv");
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
-const { ObjectId } = require("mongodb");
-const { connectToDb, getDb } = require("./db");
+// const { ObjectId } = require("mongodb");
+// const { connectToDb, getDb } = require("./db");
 const connectDB = require("./dbmongoose");
 const { port, status } = require("./config");
-const { getBooks, getBook, postBook } = require("./controllers");
+const {
+    getBooks,
+    getBook,
+    postBook,
+    deleteBook,
+    updateBook,
+} = require("./controllers");
 dotenv.config();
 
 connectDB();
@@ -43,6 +49,12 @@ app.get("/", (req, res) => {
     res.json({ message: "welcome to books api" });
 });
 
+app.get("/books", getBooks);
+app.get("/books/:id", getBook);
+app.post("/books", postBook);
+app.delete("/books/:id", deleteBook);
+app.patch("/books/:id", updateBook);
+
 // app.get("/books", (req, res) => {
 //     // current page
 //     const page = req.query.page || 0;
@@ -63,10 +75,6 @@ app.get("/", (req, res) => {
 //             res.status(500).json({ error: "Could not fetch documents" });
 //         });
 // });
-
-app.get("/books", getBooks);
-app.get("/books/:id", getBook);
-app.post("/books", postBook);
 
 // app.get("/books/:id", (req, res) => {
 //     if (ObjectId.isValid(req.params.id)) {
@@ -96,34 +104,34 @@ app.post("/books", postBook);
 //         });
 // });
 
-app.delete("/books/:id", (req, res) => {
-    if (ObjectId.isValid(req.params.id)) {
-        db.collection("books")
-            .deleteOne({ _id: new ObjectId(req.params.id) })
-            .then(result => {
-                res.status(200).json(result);
-            })
-            .catch(error => {
-                res.status(500).json({ error: "Could not delete document" });
-            });
-    } else {
-        res.status(500).json({ error: "Not a valid id doc" });
-    }
-});
+// app.delete("/books/:id", (req, res) => {
+//     if (ObjectId.isValid(req.params.id)) {
+//         db.collection("books")
+//             .deleteOne({ _id: new ObjectId(req.params.id) })
+//             .then(result => {
+//                 res.status(200).json(result);
+//             })
+//             .catch(error => {
+//                 res.status(500).json({ error: "Could not delete document" });
+//             });
+//     } else {
+//         res.status(500).json({ error: "Not a valid id doc" });
+//     }
+// });
 
-app.patch("/books/:id", (req, res) => {
-    const updates = req.body;
+// app.patch("/books/:id", (req, res) => {
+//     const updates = req.body;
 
-    if (ObjectId.isValid(req.params.id)) {
-        db.collection("books")
-            .updateOne({ _id: new ObjectId(req.params.id) }, { $set: updates })
-            .then(result => {
-                res.status(200).json(result);
-            })
-            .catch(error => {
-                res.status(500).json({ error: "Could not update document" });
-            });
-    } else {
-        res.status(500).json({ error: "Not a valid doc id" });
-    }
-});
+//     if (ObjectId.isValid(req.params.id)) {
+//         db.collection("books")
+//             .updateOne({ _id: new ObjectId(req.params.id) }, { $set: updates })
+//             .then(result => {
+//                 res.status(200).json(result);
+//             })
+//             .catch(error => {
+//                 res.status(500).json({ error: "Could not update document" });
+//             });
+//     } else {
+//         res.status(500).json({ error: "Not a valid doc id" });
+//     }
+// });
